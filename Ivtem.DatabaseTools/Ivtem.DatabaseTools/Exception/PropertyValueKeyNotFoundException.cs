@@ -7,3 +7,12 @@ public sealed class PropertyValueKeyNotFoundException : System.Exception
 
     }
 }
+
+
+public sealed class PropertyValueKeyIsNullException : System.Exception
+{
+    public PropertyValueKeyIsNullException(string propertyName) : base($"A record with null key value found! Key Property Name: {propertyName}")
+    {
+        
+    }
+}

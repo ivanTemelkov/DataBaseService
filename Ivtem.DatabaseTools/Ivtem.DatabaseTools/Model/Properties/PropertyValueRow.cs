@@ -74,7 +74,7 @@ public class PropertyValueRow : IEnumerable<PropertyValue>
         var propertyValues = properties
             .DistinctBy(x => x.PropertyName)
             .ToDictionary(x => x.PropertyName, x => x.PropertyValue);
-
+        
         return CreateRow(schema, propertyValues);
     }
 
@@ -108,12 +108,16 @@ public class PropertyValueRow : IEnumerable<PropertyValue>
     {
         foreach (var propertyName in schema.PropertyCaptions.Keys)
         {
-            if (propertyName.Equals(schema.KeyPropertyName, StringComparison.OrdinalIgnoreCase)) continue;
-
             var caption = schema.PropertyCaptions[propertyName];
             var type = schema.PropertyTypes[propertyName];
 
-            if (properties.TryGetValue(propertyName, out var value) == false) continue;
+            if (properties.TryGetValue(propertyName, out var value) == false)
+            {
+                // Value is not provided in the properties, try get it from the Key or leave it undefined
+                if (propertyName.Equals(schema.KeyPropertyName, StringComparison.OrdinalIgnoreCase) == false) continue;
+
+                value = schema.KeyPropertyValue;
+            }
 
             schema.PropertyValues[propertyName] = new PropertyValue
             {

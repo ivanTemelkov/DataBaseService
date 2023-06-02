@@ -41,10 +41,9 @@ public class PropertyValueList : IEnumerable<PropertyValueRow>
         }
     }
 
-    public PropertyValueList(PropertyValue key, IEnumerable<(string propertyName, string? propertyCaption, Type? propertyType)> properties)
+    public PropertyValueList(PropertyValue key, IEnumerable<(string PropertyName, string PropertyCaption, Type PropertyType)> properties)
     {
         ArgumentException.ThrowIfNullOrEmpty(key.Name, $"{nameof(key)}.{nameof(key.Name)}");
-        ArgumentException.ThrowIfNullOrEmpty(key.Value, $"{nameof(key)}.{nameof(key.Value)}");
 
         Key = key;
 
