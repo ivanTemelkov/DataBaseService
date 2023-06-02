@@ -1,4 +1,4 @@
-﻿namespace Ivtem.DatabaseTools;
+﻿namespace Ivtem.DatabaseTools.Model.Properties;
 
 public record PropertyValue
 {

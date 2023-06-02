@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
-namespace Ivtem.DatabaseTools;
+namespace Ivtem.DatabaseTools.Feature.DatabaseService;
 
-public interface IDataBaseService
+public interface IDatabaseService
 {
     string DataSource { get; }
     string InitialCatalog { get; }

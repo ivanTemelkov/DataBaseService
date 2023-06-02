@@ -1,10 +1,10 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System.Data.SqlClient;
+﻿using System.Data.SqlClient;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
-namespace Ivtem.DatabaseTools;
+namespace Ivtem.DatabaseTools.Feature.DatabaseService;
 
-public class SqlDataBaseService : IDataBaseService
+public class SqlDatabaseService : IDatabaseService
 {
     private SqlConnectionStringBuilder ConnectionStringBuilder { get; }
 
@@ -18,18 +18,18 @@ public class SqlDataBaseService : IDataBaseService
 
     public TSqlCompatibilityLevel CompatibilityLevel { get; private set; }
 
-    private SqlDataBaseService(SqlConnectionStringBuilder builder)
+    private SqlDatabaseService(SqlConnectionStringBuilder builder)
     {
         ConnectionStringBuilder = builder;
     }
 
-    public static async Task<SqlDataBaseService> Create(string connectionString)
+    public static async Task<SqlDatabaseService> Create(string connectionString)
     {
         ArgumentNullException.ThrowIfNull(connectionString);
 
         var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
 
-        var result = new SqlDataBaseService(connectionStringBuilder);
+        var result = new SqlDatabaseService(connectionStringBuilder);
 
         await result.Initialize();
 

@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
+using Ivtem.DatabaseTools.Exception;
 
-namespace Ivtem.DatabaseTools;
+namespace Ivtem.DatabaseTools.Model.Properties;
 
 public class PropertyValueList : IEnumerable<PropertyValueRow>
 {
