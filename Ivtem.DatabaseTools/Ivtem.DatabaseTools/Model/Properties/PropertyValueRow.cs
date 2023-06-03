@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
-using Ivtem.DatabaseTools.Exception;
+using Ivtem.DatabaseTools.Exceptions;
 
 namespace Ivtem.DatabaseTools.Model.Properties;
 

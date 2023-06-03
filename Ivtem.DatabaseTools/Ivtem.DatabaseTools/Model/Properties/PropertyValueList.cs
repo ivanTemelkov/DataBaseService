@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
-using Ivtem.DatabaseTools.Exception;
+using Ivtem.DatabaseTools.Exceptions;
 
 namespace Ivtem.DatabaseTools.Model.Properties;
 
@@ -26,6 +26,10 @@ public class PropertyValueList : IEnumerable<PropertyValueRow>
     public Dictionary<string, string> PropertyCaptions { get; } = new();
 
     public Dictionary<string, Type> PropertyTypes { get; } = new();
+
+    public long RowCount => PropertyValueRows.Count;
+
+    public long PropertiesCount => PropertyCaptions.Count;
 
     public string? this[string key, string propertyName]
     {

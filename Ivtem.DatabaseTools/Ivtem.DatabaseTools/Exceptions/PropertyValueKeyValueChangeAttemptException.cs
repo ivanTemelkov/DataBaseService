@@ -1,6 +1,6 @@
-﻿namespace Ivtem.DatabaseTools.Exception;
+﻿namespace Ivtem.DatabaseTools.Exceptions;
 
-public sealed class PropertyValueKeyValueChangeAttemptException : System.Exception
+public sealed class PropertyValueKeyValueChangeAttemptException : Exception
 {
     public PropertyValueKeyValueChangeAttemptException(string key) : base($"Key property {key} is read-only!")
     {

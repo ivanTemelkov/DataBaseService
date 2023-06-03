@@ -1,6 +1,6 @@
-﻿namespace Ivtem.DatabaseTools.Exception;
+﻿namespace Ivtem.DatabaseTools.Exceptions;
 
-public sealed class PropertyValueKeyNotFoundException : System.Exception
+public sealed class PropertyValueKeyNotFoundException : Exception
 {
     public PropertyValueKeyNotFoundException(string key) : base($"Key {key} NOT found!")
     {
@@ -9,7 +9,7 @@ public sealed class PropertyValueKeyNotFoundException : System.Exception
 }
 
 
-public sealed class PropertyValueKeyIsNullException : System.Exception
+public sealed class PropertyValueKeyIsNullException : Exception
 {
     public PropertyValueKeyIsNullException(string propertyName) : base($"A record with null key value found! Key Property Name: {propertyName}")
     {

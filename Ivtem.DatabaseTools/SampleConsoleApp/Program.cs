@@ -1,8 +1,4 @@
-﻿using System.Data.Common;
-using System.Data.SqlClient;
-using Ivtem.DatabaseTools;
-using Ivtem.DatabaseTools.Exception;
-using Ivtem.DatabaseTools.Feature.DatabaseService;
+﻿using Ivtem.DatabaseTools.Feature.DatabaseService;
 using Ivtem.DatabaseTools.Model.Properties;
 
 var connectionString =
@@ -51,43 +47,9 @@ IEnumerable<(string PropertyName, string PropertyCaption, Type PropertyType)> pr
 
 var propertyValueList = new PropertyValueList(key, properties);
 
-await using var connection = new SqlConnection(connectionString);
+var queryExecutor = new QueryExecutor(dataBaseService);
 
-await connection.OpenAsync();
-
-var command = new SqlCommand(sql, connection);
-
-await using var sqlReader = await command.ExecuteReaderAsync();
-
-while (await sqlReader.ReadAsync())
-{
-    foreach (DbDataRecord dataRecord in sqlReader)
-    {
-        var fields = new List<(string PropertyName, string? PropertyValue)>();
-
-        string? keyValue = default;
-        for (int i = 0; i < dataRecord.FieldCount; i++)
-        {
-            var name = dataRecord.GetName(i);
-            var value = dataRecord.IsDBNull(i) ? null : dataRecord.GetValue(i).ToString();
-
-            if (name.Equals(key.Name, StringComparison.OrdinalIgnoreCase))
-            {
-                keyValue = value ?? throw new PropertyValueKeyIsNullException(name);
-                continue;
-            }
-
-            // var dataTypeName = dataRecord.GetDataTypeName(i);
-            
-            fields.Add((name, value));
-        }
-
-        if (string.IsNullOrWhiteSpace(keyValue)) throw new PropertyValueKeyNotFoundException(key.Name);
-
-        propertyValueList.AddOrUpdate(keyValue, fields);
-    }
-}
-
+propertyValueList = await queryExecutor.Execute(sql, propertyValueList);
 
 foreach (var row in propertyValueList)
 {
