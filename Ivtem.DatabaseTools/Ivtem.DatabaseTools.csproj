@@ -9,7 +9,16 @@
     <Description>A set of tool for working with Databases</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <RepositoryUrl>https://github.com/ivanTemelkov/DataBaseService</RepositoryUrl>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="161.8817.2" />
