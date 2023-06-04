@@ -12,20 +12,17 @@ public class PropertyValueList : IEnumerable<PropertyValueRow>
     /// </summary>
     private ConcurrentDictionary<string, PropertyValueRow> PropertyValueRows { get; } = new();
 
-    public PropertyValue Key { get; }
+    public PropertyValueSchema Schema { get; }
 
-    public string KeyPropertyName => Key.Name;
+    public string KeyPropertyName => Schema.KeyPropertyName;
 
-    public string KeyPropertyCaption => Key.Caption ?? Key.Name;
+    public string KeyPropertyCaption => Schema.KeyPropertyCaption;
 
-    public Type KeyPropertyType => Key.Type;
+    public Type KeyPropertyType => Schema.KeyPropertyType;
 
-    /// <summary>
-    /// Dictionary of propertyName, propertyCaption
-    /// </summary>
-    public Dictionary<string, string> PropertyCaptions { get; } = new();
+    public Dictionary<string, string> PropertyCaptions => Schema.PropertyCaptions;
 
-    public Dictionary<string, Type> PropertyTypes { get; } = new();
+    public Dictionary<string, Type> PropertyTypes => Schema.PropertyTypes;
 
     public long RowCount => PropertyValueRows.Count;
 
@@ -45,35 +42,16 @@ public class PropertyValueList : IEnumerable<PropertyValueRow>
         }
     }
 
-    public PropertyValueList(PropertyValue key, IEnumerable<(string PropertyName, string PropertyCaption, Type PropertyType)> properties)
+    public PropertyValueList(PropertyValueSchema schema)
     {
-        ArgumentException.ThrowIfNullOrEmpty(key.Name, $"{nameof(key)}.{nameof(key.Name)}");
-
-        Key = key;
-
-        foreach (var (propertyName, propertyCaption, propertyType) in properties)
-        {
-            PropertyCaptions[propertyName] = propertyCaption ?? propertyName;
-            PropertyTypes[propertyName] = propertyType ?? typeof(string);
-        }
-
-        PropertyCaptions[KeyPropertyName] = KeyPropertyCaption;
-        PropertyTypes[KeyPropertyName] = KeyPropertyType;
+        Schema = schema;
     }
 
     public void AddOrUpdate(string keyValue, IEnumerable<(string propertyName, string? propertyValue)> properties)
     {
         ArgumentException.ThrowIfNullOrEmpty(keyValue, nameof(keyValue));
-
-        var key = new PropertyValue
-        {
-            Name = KeyPropertyName,
-            Caption = KeyPropertyCaption,
-            Type = KeyPropertyType,
-            Value = keyValue
-        };
-
-        var propertyValueRow = PropertyValueRow.CreateRow(key, PropertyCaptions, PropertyTypes, properties);
+        
+        var propertyValueRow = PropertyValueRow.CreateRow(keyValue, Schema, properties);
 
         PropertyValueRows[keyValue] = propertyValueRow;
     }

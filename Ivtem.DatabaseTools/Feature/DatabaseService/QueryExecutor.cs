@@ -17,12 +17,8 @@ public class QueryExecutor
     }
 
 
-    public async Task<PropertyValueList> Execute(string query, PropertyValueList schema)
+    public async Task<PropertyValueList> Execute(string query, PropertyValueSchema schema)
     {
-        if (schema.RowCount > 0) throw new PropertyValueListNotEmptyException();
-
-        var key = schema.Key;
-
         await using var connection = new SqlConnection(ConnectionString);
 
         await connection.OpenAsync();
@@ -30,6 +26,9 @@ public class QueryExecutor
         var command = new SqlCommand(query, connection);
 
         await using var sqlReader = await command.ExecuteReaderAsync();
+
+        var keyName = schema.KeyPropertyName;
+        var result = new PropertyValueList(schema);
 
         while (await sqlReader.ReadAsync())
         {
@@ -43,7 +42,7 @@ public class QueryExecutor
                     var name = dataRecord.GetName(i);
                     var value = dataRecord.IsDBNull(i) ? null : dataRecord.GetValue(i).ToString();
 
-                    if (name.Equals(key.Name, StringComparison.OrdinalIgnoreCase))
+                    if (name.Equals(keyName, StringComparison.OrdinalIgnoreCase))
                     {
                         keyValue = value ?? throw new PropertyValueKeyIsNullException(name);
                         continue;
@@ -54,12 +53,12 @@ public class QueryExecutor
                     fields.Add((name, value));
                 }
 
-                if (string.IsNullOrWhiteSpace(keyValue)) throw new PropertyValueKeyNotFoundException(key.Name);
+                if (string.IsNullOrWhiteSpace(keyValue)) throw new PropertyValueKeyNotFoundException(keyName);
 
-                schema.AddOrUpdate(keyValue, fields);
+                result.AddOrUpdate(keyValue, fields);
             }
         }
 
-        return schema;
+        return result;
     }
 }

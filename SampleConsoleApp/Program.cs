@@ -31,25 +31,19 @@ if (dataBaseService.TryValidateSqlQuery(sql, out var parseErrors) == false)
 
 Console.WriteLine("The query is valid.\n");
 
-var key = new PropertyValue
+var key = new PropertyValue("MachineId", "Machine Id");
+
+var properties = new []
 {
-    Name = "MachineId",
-    Caption = "Machine Id",
-    Type = typeof(string),
-    Value = null
+    new PropertyValue("MachineDescription", "Machine Description", typeof(string))
 };
 
-IEnumerable<(string PropertyName, string PropertyCaption, Type PropertyType)> properties = new []
-{
-    (key.Name, key.Caption, key.Type),
-    ("MachineDescription", "Machine Description", typeof(string)),
-};
 
-var propertyValueList = new PropertyValueList(key, properties);
+var schema = new PropertyValueSchema(key, properties);
 
 var queryExecutor = new QueryExecutor(dataBaseService);
 
-propertyValueList = await queryExecutor.Execute(sql, propertyValueList);
+var propertyValueList = await queryExecutor.Execute(sql, schema);
 
 foreach (var row in propertyValueList)
 {

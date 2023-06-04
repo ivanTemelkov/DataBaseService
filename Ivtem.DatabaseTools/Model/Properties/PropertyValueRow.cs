@@ -12,22 +12,21 @@ public class PropertyValueRow : IEnumerable<PropertyValue>
     /// </summary>
     private ConcurrentDictionary<string, PropertyValue> PropertyValues { get; } = new();
 
-    public PropertyValue Key { get; }
+    public PropertyValueKey Key { get; }
 
     public string KeyPropertyName => Key.Name;
 
-    public string KeyPropertyValue => Key.Value ?? throw new PropertyValueMissingKeyValueException(KeyPropertyName);
+    public string KeyPropertyValue => Key.Value!;
 
-    public string KeyPropertyCaption => Key.Caption ?? Key.Name;
+    public string KeyPropertyCaption => Key.Caption;
 
     public Type KeyPropertyType => Key.Type;
 
-    /// <summary>
-    /// Dictionary of propertyName, propertyCaption
-    /// </summary>
-    public Dictionary<string, string> PropertyCaptions { get; private set; } = new();
+    private PropertyValueSchema Schema { get; }
 
-    public Dictionary<string, Type> PropertyTypes { get; private set; } = new();
+    public Dictionary<string, string> PropertyCaptions => Schema.PropertyCaptions;
+
+    public Dictionary<string, Type> PropertyTypes => Schema.PropertyTypes;
 
     public string? this[string propertyName]
     {
@@ -35,53 +34,30 @@ public class PropertyValueRow : IEnumerable<PropertyValue>
         set => SetValue(propertyName, value);
     }
 
-    private PropertyValueRow(PropertyValue key)
+    private PropertyValueRow(PropertyValueKey key, PropertyValueSchema schema)
     {
         Key = key;
-    }
-
-    public PropertyValueRow(PropertyValue key, IEnumerable<(string propertyName, string? propertyCaption, Type? propertyType)> rowSchema)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(key.Name);
-        ArgumentException.ThrowIfNullOrEmpty(key.Value);
-
-        Key = key;
-
         PropertyValues[KeyPropertyName] = key;
-
-        foreach (var (propertyName, propertyCaption, propertyType) in rowSchema)
-        {
-            PropertyCaptions[propertyName] = propertyCaption ?? propertyName;
-            PropertyTypes[propertyName] = propertyType ?? typeof(string);
-        }
-
-        PropertyCaptions[KeyPropertyName] = KeyPropertyCaption;
-        PropertyTypes[KeyPropertyName] = KeyPropertyType;
+        Schema = schema;
     }
 
-    internal static PropertyValueRow CreateRow(PropertyValue key, Dictionary<string, string> propertyCaptions,
-        Dictionary<string, Type> propertyTypes, IEnumerable<(string PropertyName, string? PropertyValue)> properties)
+    public static PropertyValueRow CreateRow(string keyValue, PropertyValueSchema schema, IEnumerable<(string PropertyName, string? PropertyValue)> properties)
     {
-        ArgumentException.ThrowIfNullOrEmpty(key.Name);
-        ArgumentException.ThrowIfNullOrEmpty(key.Value);
+        ArgumentException.ThrowIfNullOrEmpty(keyValue, nameof(keyValue));
 
-        var schema = new PropertyValueRow(key)
-        {
-            PropertyCaptions = propertyCaptions,
-            PropertyTypes = propertyTypes,
-        };
+        var key = new PropertyValueKey(keyValue, schema);
+
+        var row = new PropertyValueRow(key, schema);
 
         var propertyValues = properties
             .DistinctBy(x => x.PropertyName)
             .ToDictionary(x => x.PropertyName, x => x.PropertyValue);
-        
-        return CreateRow(schema, propertyValues);
+
+        return CreateRow(row, propertyValues);
     }
 
     public PropertyValueRow CreateRow(string keyValue, IEnumerable<(string PropertyName, string? PropertyValue)> properties)
     {
-        ArgumentException.ThrowIfNullOrEmpty(keyValue);
-
         var propertyValues = properties
             .DistinctBy(x => x.PropertyName)
             .ToDictionary(x => x.PropertyName, x => x.PropertyValue);
@@ -91,44 +67,33 @@ public class PropertyValueRow : IEnumerable<PropertyValue>
 
     public PropertyValueRow CreateRow(string keyValue, IReadOnlyDictionary<string, string?> properties)
     {
-        ArgumentException.ThrowIfNullOrEmpty(keyValue);
+        var key = new PropertyValueKey(Schema.KeyPropertyName, keyValue, Schema.KeyPropertyCaption,
+            Schema.KeyPropertyType);
 
-        var key = Key with { Value = keyValue };
-
-        var result = new PropertyValueRow(key)
-        {
-            PropertyCaptions = PropertyCaptions,
-            PropertyTypes = PropertyTypes
-        };
+        var result = new PropertyValueRow(key, Schema);
 
         return CreateRow(result, properties);
     }
 
-    private static PropertyValueRow CreateRow(PropertyValueRow schema, IReadOnlyDictionary<string, string?> properties)
+    private static PropertyValueRow CreateRow(PropertyValueRow emptyRow, IReadOnlyDictionary<string, string?> properties)
     {
-        foreach (var propertyName in schema.PropertyCaptions.Keys)
+        foreach (var propertyName in emptyRow.PropertyCaptions.Keys)
         {
-            var caption = schema.PropertyCaptions[propertyName];
-            var type = schema.PropertyTypes[propertyName];
+            var caption = emptyRow.PropertyCaptions[propertyName];
+            var type = emptyRow.PropertyTypes[propertyName];
 
             if (properties.TryGetValue(propertyName, out var value) == false)
             {
                 // Value is not provided in the properties, try get it from the Key or leave it undefined
-                if (propertyName.Equals(schema.KeyPropertyName, StringComparison.OrdinalIgnoreCase) == false) continue;
+                if (propertyName.Equals(emptyRow.KeyPropertyName, StringComparison.OrdinalIgnoreCase) == false) continue;
 
-                value = schema.KeyPropertyValue;
+                value = emptyRow.KeyPropertyValue;
             }
 
-            schema.PropertyValues[propertyName] = new PropertyValue
-            {
-                Name = propertyName,
-                Caption = caption,
-                Type = type,
-                Value = value
-            };
+            emptyRow.PropertyValues[propertyName] = new PropertyValue(propertyName, caption, type, value);
         }
 
-        return schema;
+        return emptyRow;
     }
 
     public void AddOrUpdateRow(PropertyValueRow other)
@@ -169,13 +134,7 @@ public class PropertyValueRow : IEnumerable<PropertyValue>
 
         var newPropertyValue = PropertyValues.TryGetValue(propertyName, out var propertyValue)
             ? propertyValue with { Value = value }
-            : new PropertyValue
-            {
-                Name = propertyName,
-                Caption = caption,
-                Type = type,
-                Value = value
-            };
+            : new PropertyValue(propertyName, caption, type, value);
 
 
         PropertyValues[propertyName] = newPropertyValue;
@@ -191,12 +150,7 @@ public class PropertyValueRow : IEnumerable<PropertyValue>
             }
             else
             {
-                yield return new PropertyValue
-                {
-                    Name = propertyName,
-                    Caption = PropertyCaptions[propertyName],
-                    Value = null
-                };
+                yield return new PropertyValue(propertyName, PropertyCaptions[propertyName]);
             }
         }
     }
