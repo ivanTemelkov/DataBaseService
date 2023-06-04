@@ -73,8 +73,17 @@ SELECT * FROM SomeTable;
 SELECT Field1, Field2, Field3 FROM SomeTable;
 ";
 
+    private static string SelectTop1FieldsStatement => @"
+SELECT TOP 1 Field1, Field2, Field3 FROM SomeTable;
+";
+
     private static string SelectFieldsAsStatement => @"
 SELECT Field1 AS [NewName1], Field2, Field3 AS [NewName3] FROM SomeTable;
+";
+
+    // Without AS Count this breaks because the column Expression is seen as FunctionCall
+    private static string SelectCountStatement => @"
+SELECT COUNT(Field1) AS Count FROM SomeTable GROUP BY Field1;
 ";
 
     private static InputResultData[] TestData => new[]
@@ -85,6 +94,8 @@ SELECT Field1 AS [NewName1], Field2, Field3 AS [NewName3] FROM SomeTable;
         }),
         new InputResultData(SelectAllStatement, Array.Empty<string>()),
         new InputResultData(SelectFieldsStatement, new [] { "Field1", "Field2", "Field3" }),
+        new InputResultData(SelectTop1FieldsStatement, new [] { "Field1", "Field2", "Field3" }),
+        new InputResultData(SelectCountStatement, new [] { "Count" }),
         new InputResultData(SelectFieldsAsStatement, new [] { "NewName1", "Field2", "NewName3" })
     };
 
@@ -100,6 +111,8 @@ SELECT Field1 AS [NewName1], Field2, Field3 AS [NewName3] FROM SomeTable;
     [TestCase(1)]
     [TestCase(2)]
     [TestCase(3)]
+    [TestCase(4)]
+    [TestCase(5)]
     public void ItParsesCorrectly(int index)
     {
         var testData = TestData[index];
