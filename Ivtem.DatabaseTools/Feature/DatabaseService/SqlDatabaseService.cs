@@ -1,14 +1,11 @@
 ﻿using System.Data.SqlClient;
-using System.Diagnostics.CodeAnalysis;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace Ivtem.DatabaseTools.Feature.DatabaseService;
 
 public class SqlDatabaseService : IDatabaseService
 {
     private SqlConnectionStringBuilder ConnectionStringBuilder { get; }
-
-    private TSqlParserFactory ParserFactory { get; } = new(initialQuotedIdentifiers: true, SqlEngineType.Standalone);
+    
 
     public string DataSource => ConnectionStringBuilder.DataSource;
 
@@ -35,21 +32,7 @@ public class SqlDatabaseService : IDatabaseService
 
         return result;
     }
-
-    public bool TryValidateSqlQuery(string query, [NotNullWhen(false)] out ParseError[]? parseErrors)
-    {
-        parseErrors = default;
-
-        var sqlParser = ParserFactory.GetParser(CompatibilityLevel);
-
-        using var reader = new StringReader(query);
-        _ = sqlParser.Parse(reader, out var errors);
-
-        parseErrors = errors?.ToArray();
-
-        return parseErrors is null || parseErrors.Length == 0;
-    }
-
+    
     private async Task Initialize()
     {
         CompatibilityLevel = await GetCompatibilityLevel();

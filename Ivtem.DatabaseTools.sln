@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33723.286
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ivtem.DatabaseTools", "Ivtem.DatabaseTools\Ivtem.DatabaseTools.csproj", "{983A30BF-71AE-4F83-A28C-B47996ED712E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ivtem.DatabaseTools", "Ivtem.DatabaseTools\Ivtem.DatabaseTools.csproj", "{983A30BF-71AE-4F83-A28C-B47996ED712E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SampleConsoleApp", "SampleConsoleApp\SampleConsoleApp.csproj", "{1FA71B21-95CA-4ADA-8827-D6C6043554F6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SampleConsoleApp", "SampleConsoleApp\SampleConsoleApp.csproj", "{1FA71B21-95CA-4ADA-8827-D6C6043554F6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ivtem.DatabaseTools.UnitTests", "Ivtem.DatabaseTools.UnitTests\Ivtem.DatabaseTools.UnitTests.csproj", "{ACC9817D-F198-499F-9AE1-B39D9B9AD385}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{1FA71B21-95CA-4ADA-8827-D6C6043554F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1FA71B21-95CA-4ADA-8827-D6C6043554F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1FA71B21-95CA-4ADA-8827-D6C6043554F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACC9817D-F198-499F-9AE1-B39D9B9AD385}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACC9817D-F198-499F-9AE1-B39D9B9AD385}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACC9817D-F198-499F-9AE1-B39D9B9AD385}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACC9817D-F198-499F-9AE1-B39D9B9AD385}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

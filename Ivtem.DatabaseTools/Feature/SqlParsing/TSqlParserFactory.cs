@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Ivtem.DatabaseTools.Feature.DatabaseService;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
-namespace Ivtem.DatabaseTools.Feature.DatabaseService;
+namespace Ivtem.DatabaseTools.Feature.SqlParsing;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 public class TSqlParserFactory
