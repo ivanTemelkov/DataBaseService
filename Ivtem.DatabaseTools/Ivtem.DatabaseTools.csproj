@@ -9,20 +9,23 @@
     <Description>A set of tool for working with Databases</Description>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile></PackageReadmeFile>
     <RepositoryUrl>https://github.com/ivanTemelkov/DataBaseService</RepositoryUrl>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\README.md">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.SqlServer.TransactSql.ScriptDom" Version="161.8817.2" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Exceptions\" />
+	  <Folder Include="Feature\SqlParsing\" />
+	  <Folder Include="Model\Properties\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Ivtem.TSqlParsing\Ivtem.TSqlParsing.csproj" />
 	</ItemGroup>
 	
 </Project>

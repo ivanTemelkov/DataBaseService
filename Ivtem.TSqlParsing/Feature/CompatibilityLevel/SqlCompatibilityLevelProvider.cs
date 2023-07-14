@@ -1,12 +1,13 @@
 ﻿using System.Data.SqlClient;
-using Ivtem.TSqlParsing.Feature.CompatibilityLevel;
+using Ivtem.TSqlParsing.Extensions;
 
-namespace Ivtem.DatabaseTools.Feature.DatabaseService;
+namespace Ivtem.TSqlParsing.Feature.CompatibilityLevel;
 
-public class SqlDatabaseService : IDatabaseService
+public class SqlCompatibilityLevelProvider : ISqlCompatibilityLevelProvider
 {
+    public TSqlCompatibilityLevel? CompatibilityLevel { get; private set; }
+
     private SqlConnectionStringBuilder ConnectionStringBuilder { get; }
-    
 
     public string DataSource => ConnectionStringBuilder.DataSource;
 
@@ -14,33 +15,22 @@ public class SqlDatabaseService : IDatabaseService
 
     public string ConnectionString => ConnectionStringBuilder.ConnectionString;
 
-    public TSqlCompatibilityLevel CompatibilityLevel { get; private set; }
-
-    private SqlDatabaseService(SqlConnectionStringBuilder builder)
+    public SqlCompatibilityLevelProvider(string connectionString)
     {
-        ConnectionStringBuilder = builder;
+        ArgumentException.ThrowIfNullOrEmpty(connectionString);
+        ConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
     }
 
-    public static async Task<SqlDatabaseService> Create(string connectionString)
+    public Task GetCompatibilityLevelWithTimeout(TimeSpan? timeoutInterval = null)
     {
-        ArgumentNullException.ThrowIfNull(connectionString);
-
-        var connectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
-
-        var result = new SqlDatabaseService(connectionStringBuilder);
-
-        await result.Initialize();
-
-        return result;
-    }
-    
-    private async Task Initialize()
-    {
-        CompatibilityLevel = await GetCompatibilityLevel();
+        var timeout = timeoutInterval ?? TimeSpan.FromSeconds(1);
+        return GetCompatibilityLevel().WithTimeout(timeout);
     }
 
     private async Task<TSqlCompatibilityLevel> GetCompatibilityLevel()
     {
+        if (CompatibilityLevel.HasValue) return CompatibilityLevel.Value;
+
         var sql = @$"
 SELECT TOP 1 compatibility_level AS [CompatibilityLevel]
 FROM sys.databases WHERE name = '{InitialCatalog}';
@@ -56,7 +46,8 @@ FROM sys.databases WHERE name = '{InitialCatalog}';
         if (await sqlReader.ReadAsync() && sqlReader[0] is byte value)
         {
             await connection.CloseAsync();
-            return FromInt(value);
+            CompatibilityLevel = FromInt(value);
+            return CompatibilityLevel.Value;
         }
 
         throw new InvalidOperationException("Failed to get Sql Compatibility Level!");

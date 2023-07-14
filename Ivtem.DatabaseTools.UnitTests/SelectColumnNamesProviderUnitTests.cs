@@ -1,5 +1,6 @@
-using Ivtem.DatabaseTools.Feature.DatabaseService;
-using Ivtem.DatabaseTools.Feature.SqlParsing;
+using Ivtem.TSqlParsing.Feature;
+using Ivtem.TSqlParsing.Feature.ColumnNames;
+using Ivtem.TSqlParsing.Feature.SqlFragment;
 
 namespace Ivtem.DatabaseTools.UnitTests;
 
@@ -99,7 +100,7 @@ SELECT COUNT(Field1) AS Count FROM SomeTable GROUP BY Field1;
         new InputResultData(SelectFieldsAsStatement, new [] { "NewName1", "Field2", "NewName3" })
     };
 
-    private SqlParser Parser { get; } = new(TSqlCompatibilityLevel.TSql160);
+    private TSqlFragmentProvider FragmentProvider { get; } = new();
 
     [SetUp]
     public void Setup()
@@ -119,7 +120,7 @@ SELECT COUNT(Field1) AS Count FROM SomeTable GROUP BY Field1;
         var sql = testData.SqlQuery;
         var expectedColumnNames = testData.ColumnNames;
 
-        var isParsed = Parser.TryGetSqlFragment(sql, out var sqlFragment, out _);
+        var isParsed = FragmentProvider.TryGetSqlFragment(sql, out var sqlFragment, out _);
 
         Assert.That(isParsed, Is.True);
 

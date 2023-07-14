@@ -1,5 +1,8 @@
 ﻿using Ivtem.DatabaseTools.Feature.DatabaseService;
-using Ivtem.DatabaseTools.Model.Properties;
+using Ivtem.TSqlParsing.Feature;
+using Ivtem.TSqlParsing.Feature.ColumnNames;
+using Ivtem.TSqlParsing.Feature.SqlFragment;
+using Ivtem.TSqlParsing.Model.Properties;
 
 var connectionString =
     @"Initial Catalog=operaSacet;Data Source=LM-NBK-44\DEV19;User ID=operasa;Password=*****;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
@@ -79,7 +82,7 @@ Console.WriteLine($"sql: {sql}");
 
 Console.WriteLine($"Testing for errors ...");
 
-var sqlParser = new SqlParser(dataBaseService.CompatibilityLevel);
+var sqlParser = new TSqlFragmentProvider();
 
 if (sqlParser.TryGetSqlFragment(sql, out var sqlFragment, out var parseErrors) == false)
 {

@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using Ivtem.DatabaseTools.Exceptions;
 
-namespace Ivtem.DatabaseTools.Model.Properties;
+namespace Ivtem.TSqlParsing.Model.Properties;
 
 public class PropertyValueList : IEnumerable<PropertyValueRow>
 {

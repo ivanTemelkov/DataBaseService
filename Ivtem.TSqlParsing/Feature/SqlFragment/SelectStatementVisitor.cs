@@ -1,7 +1,7 @@
-﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
-namespace Ivtem.DatabaseTools.Feature.SqlParse;
+namespace Ivtem.TSqlParsing.Feature.SqlFragment;
 
 public class SelectStatementVisitor : TSqlConcreteFragmentVisitor
 {

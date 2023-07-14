@@ -1,6 +1,6 @@
 ﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
 
-namespace Ivtem.DatabaseTools.Feature.SqlParse;
+namespace Ivtem.TSqlParsing.Feature.SqlFragment;
 
 public class SelectScalarExpressionVisitor : TSqlConcreteFragmentVisitor
 {

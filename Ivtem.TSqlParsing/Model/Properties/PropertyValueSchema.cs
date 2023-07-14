@@ -1,4 +1,4 @@
-﻿namespace Ivtem.DatabaseTools.Model.Properties;
+﻿namespace Ivtem.TSqlParsing.Model.Properties;
 
 public record PropertyValueSchema
 {

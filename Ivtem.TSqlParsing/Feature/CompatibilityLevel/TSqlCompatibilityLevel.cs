@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Ivtem.DatabaseTools.Feature.DatabaseService;
+namespace Ivtem.TSqlParsing.Feature.CompatibilityLevel;
 
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum TSqlCompatibilityLevel

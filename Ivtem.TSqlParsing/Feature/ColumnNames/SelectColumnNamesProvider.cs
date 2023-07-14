@@ -1,10 +1,10 @@
 ﻿using System.Collections.Immutable;
-using Ivtem.DatabaseTools.Feature.SqlParse;
+using Ivtem.TSqlParsing.Feature.SqlFragment;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
-namespace Ivtem.DatabaseTools.Feature.SqlParsing;
+namespace Ivtem.TSqlParsing.Feature.ColumnNames;
 
-public class SelectColumnNamesProvider
+public class SelectColumnNamesProvider : ISelectColumnNamesProvider
 {
     public ImmutableArray<string> GetColumnNames(TSqlFragment sqlFragment)
     {

@@ -1,4 +1,5 @@
-﻿
+﻿using Ivtem.TSqlParsing.Feature.CompatibilityLevel;
+
 namespace Ivtem.DatabaseTools.Feature.DatabaseService;
 
 public interface IDatabaseService
