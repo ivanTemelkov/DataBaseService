@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net7.0</TargetFramework>
@@ -10,8 +10,8 @@
 		<PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
-		<PackageProjectUrl>https://github.com/ivanTemelkov/DataBaseService/tree/main/Ivtem.TSqlParsing</PackageProjectUrl>
-		<VersionPrefix>1.0.1</VersionPrefix>
+		<PackageProjectUrl>https://github.com/ivanTemelkov/DataBaseService</PackageProjectUrl>
+		<VersionPrefix>1.0.2</VersionPrefix>
 	</PropertyGroup>
 
 	<ItemGroup>
