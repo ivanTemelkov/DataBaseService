@@ -6,5 +6,6 @@ public interface ISqlCompatibilityLevelProvider
     string DataSource { get; }
     string InitialCatalog { get; }
     string ConnectionString { get; }
-    Task GetCompatibilityLevelWithTimeout(TimeSpan? timeoutInterval = null);
+    Task<TSqlCompatibilityLevel> GetCompatibilityLevelWithTimeout(TimeSpan? timeoutInterval = null);
+    Task<TSqlCompatibilityLevel> GetCompatibilityLevel();
 }

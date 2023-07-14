@@ -21,13 +21,13 @@ public class SqlCompatibilityLevelProvider : ISqlCompatibilityLevelProvider
         ConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
     }
 
-    public Task GetCompatibilityLevelWithTimeout(TimeSpan? timeoutInterval = null)
+    public Task<TSqlCompatibilityLevel> GetCompatibilityLevelWithTimeout(TimeSpan? timeoutInterval = null)
     {
         var timeout = timeoutInterval ?? TimeSpan.FromSeconds(1);
         return GetCompatibilityLevel().WithTimeout(timeout);
     }
 
-    private async Task<TSqlCompatibilityLevel> GetCompatibilityLevel()
+    public async Task<TSqlCompatibilityLevel> GetCompatibilityLevel()
     {
         if (CompatibilityLevel.HasValue) return CompatibilityLevel.Value;
 
