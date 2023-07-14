@@ -11,9 +11,16 @@ public static class ServiceCollectionExtensions
     public static IServiceCollection AddSqlParsing(this IServiceCollection sc, string connectionString)
     {
         return sc.AddScoped<ITSqlParserFactory, TSqlParserFactory>()
+            .AddScoped<ISqlScriptGeneratorFactory, SqlScriptGeneratorFactory>()
             .AddScoped<ISqlFragmentProvider, TSqlFragmentProvider>()
             .AddScoped<ISelectColumnNamesProvider, SelectColumnNamesProvider>()
             .AddScoped<ISelectQueryFieldNamesProvider, SelectQueryFieldNamesProvider>()
             .AddScoped<ISqlCompatibilityLevelProvider>(_ => new SqlCompatibilityLevelProvider(connectionString));
+    }
+
+    public static IServiceCollection AddSqlParsing(this IServiceCollection sc, Func<string> connectionStringConfig)
+    {
+        var connectionString = connectionStringConfig();
+        return sc.AddSqlParsing(connectionString);
     }
 }
