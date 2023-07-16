@@ -31,7 +31,7 @@ public class SqlFragmentAndGeneratorProvider : ISqlFragmentAndGeneratorProvider
         return CompatibilityLevel.Value;
     }
 
-    public async Task<TSqlFragment> TryGetSqlFragment(string sql)
+    public async Task<TSqlFragment> GetSqlFragment(string sql)
     {
         CompatibilityLevel ??= await CompatibilityLevelProvider.GetCompatibilityLevelWithTimeout();
         if (SqlFragmentProvider.TryGetSqlFragment(sql, CompatibilityLevel.Value, out var sqlFragment, out var parseErrors) ==
@@ -41,6 +41,12 @@ public class SqlFragmentAndGeneratorProvider : ISqlFragmentAndGeneratorProvider
         }
 
         return sqlFragment;
+    }
+
+    [Obsolete($"Use {nameof(GetSqlFragment)} instead.")]
+    public Task<TSqlFragment> TryGetSqlFragment(string sql)
+    {
+        return GetSqlFragment(sql);
     }
 
     public async Task<DefaultSqlScriptGenerator> GetSqlGenerator()
