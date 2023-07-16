@@ -117,7 +117,7 @@ TSqlFragment? sqlFragment = default;
 
 try
 {
-    sqlFragment = await sqlParserGeneratorProvider.TryGetSqlFragment(sql);
+    sqlFragment = await sqlParserGeneratorProvider.GetSqlFragment(sql);
 }
 catch (Exception e)
 {

@@ -4,7 +4,7 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace Ivtem.TSqlParsing.Feature.SelectQuery;
 
-public class SelectStatementProvider : ISelectQueryProvider
+public class SelectStatementProvider : ISelectStatementProvider
 {
     public bool TryGetStatement(TSqlFragment sqlFragment, [NotNullWhen(true)] out SelectStatement? selectStatement)
     {

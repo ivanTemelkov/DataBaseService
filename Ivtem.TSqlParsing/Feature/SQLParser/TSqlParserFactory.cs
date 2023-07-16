@@ -3,7 +3,7 @@ using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace Ivtem.TSqlParsing.Feature.SqlParser;
 
-public class TSqlParserFactory : ITSqlParserFactory
+public class TSqlParserFactory
 {
     private bool InitialQuotedIdentifiers { get; }
     private SqlEngineType SqlEngineType { get; }
