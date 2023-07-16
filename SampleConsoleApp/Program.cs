@@ -1,8 +1,11 @@
 ﻿using Ivtem.DatabaseTools.Feature.DatabaseService;
 using Ivtem.TSqlParsing.Feature;
 using Ivtem.TSqlParsing.Feature.ColumnNames;
+using Ivtem.TSqlParsing.Feature.SelectQuery;
 using Ivtem.TSqlParsing.Feature.SqlFragment;
+using Ivtem.TSqlParsing.Feature.SqlGenerator;
 using Ivtem.TSqlParsing.Model.Properties;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 var connectionString =
     @"Initial Catalog=operaSacet;Data Source=LM-NBK-44\DEV19;User ID=operasa;Password=*****;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
@@ -78,6 +81,28 @@ INNER JOIN [Fasi] AS [F] (NOLOCK) ON [MP].[PhaseId] = [F].[fa_id]
 LEFT JOIN [SumLastSetups] AS [LS] ON [MP].[MachineId] = [LS].[MachineId] AND [MP].[PhaseId] = [LS].[PhaseId];
 ";
 
+
+sql = @"
+IF @ma_codice = 0
+BEGIN
+    SELECT [ma_codice] AS [MachineId],
+	       [fa_id] AS [PhaseId]
+    FROM [Piazzamenti] (NOLOCK)
+    WHERE [ma_codice] IN (@@machineIds@@)
+END;
+";
+
+sql = @"
+INSERT INTO [Piazzamenti] (id)
+VALUES (1);
+
+SELECT [ma_codice] AS [MachineId],
+	   [fa_id] AS [PhaseId]
+FROM [Piazzamenti] (NOLOCK)
+WHERE [ma_codice] IN (@@machineIds@@);
+";
+
+
 Console.WriteLine($"sql: {sql}");
 
 Console.WriteLine($"Testing for errors ...");
@@ -95,6 +120,34 @@ if (sqlParser.TryGetSqlFragment(sql, out var sqlFragment, out var parseErrors) =
 }
 
 Console.WriteLine("The query is valid.\n");
+
+var selectQueryProvider = new SelectStatementProvider();
+
+if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement) == false)
+{
+    Console.WriteLine("SELECT statement NOT found!");
+    return;
+}
+
+var generatorFactory = new SqlGeneratorFactory();
+var sqlGenerator = generatorFactory.GetGenerator(dataBaseService.CompatibilityLevel);
+
+var script = sqlGenerator.Generate(selectStatement);
+
+Console.WriteLine(script);
+return;
+
+
+var tableNamesProvider = new TableNamesProvider();
+var tableNames = tableNamesProvider.GetTableNames(selectStatement);
+
+foreach (var tableName in tableNames)
+{
+    Console.WriteLine(tableName);
+}
+
+return;
+
 
 var columnNamesProvider = new SelectColumnNamesProvider();
 

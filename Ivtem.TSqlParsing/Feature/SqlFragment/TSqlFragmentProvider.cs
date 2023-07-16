@@ -1,5 +1,5 @@
 ﻿using Ivtem.TSqlParsing.Feature.CompatibilityLevel;
-using Ivtem.TSqlParsing.Feature.SQLParser;
+using Ivtem.TSqlParsing.Feature.SqlParser;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Diagnostics.CodeAnalysis;
 

@@ -1,5 +1,6 @@
 using Ivtem.TSqlParsing.Feature;
 using Ivtem.TSqlParsing.Feature.ColumnNames;
+using Ivtem.TSqlParsing.Feature.SelectQuery;
 using Ivtem.TSqlParsing.Feature.SqlFragment;
 
 namespace Ivtem.DatabaseTools.UnitTests;

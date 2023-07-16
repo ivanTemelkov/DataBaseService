@@ -1,15 +1,16 @@
 ﻿using System.Collections.Immutable;
+using Ivtem.TSqlParsing.Feature.ColumnNames;
 using Ivtem.TSqlParsing.Feature.SqlFragment;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
-namespace Ivtem.TSqlParsing.Feature.ColumnNames;
+namespace Ivtem.TSqlParsing.Feature.SelectQuery;
 
 public class SelectColumnNamesProvider : ISelectColumnNamesProvider
 {
     public ImmutableArray<string> GetColumnNames(TSqlFragment sqlFragment)
     {
-        var visitor = new SelectStatementVisitor();
+        var visitor = new GetColumnNamesVisitor();
         sqlFragment.Accept(visitor);
-        return visitor.GetColumnNames();
+        return visitor.GetData();
     }
 }

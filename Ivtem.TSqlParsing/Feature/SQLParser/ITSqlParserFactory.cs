@@ -1,7 +1,7 @@
 ﻿using Ivtem.TSqlParsing.Feature.CompatibilityLevel;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
-namespace Ivtem.TSqlParsing.Feature.SQLParser;
+namespace Ivtem.TSqlParsing.Feature.SqlParser;
 
 public interface ITSqlParserFactory
 {
