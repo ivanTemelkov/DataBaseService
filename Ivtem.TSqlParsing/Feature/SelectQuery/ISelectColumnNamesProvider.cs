@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
-namespace Ivtem.TSqlParsing.Feature.ColumnNames;
+namespace Ivtem.TSqlParsing.Feature.SelectQuery;
 
 public interface ISelectColumnNamesProvider
 {

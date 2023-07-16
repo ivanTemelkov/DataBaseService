@@ -2,7 +2,7 @@
 using Ivtem.TSqlParsing.Feature.CompatibilityLevel;
 using Ivtem.TSqlParsing.Feature.SqlFragment;
 
-namespace Ivtem.TSqlParsing.Feature.ColumnNames;
+namespace Ivtem.TSqlParsing.Feature.SelectQuery;
 
 public class SelectQueryFieldNamesProvider : ISelectQueryFieldNamesProvider
 {

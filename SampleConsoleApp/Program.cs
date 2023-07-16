@@ -1,6 +1,6 @@
 ﻿using Ivtem.DatabaseTools.Feature.DatabaseService;
 using Ivtem.TSqlParsing.Feature;
-using Ivtem.TSqlParsing.Feature.ColumnNames;
+using Ivtem.TSqlParsing.Feature.CompatibilityLevel;
 using Ivtem.TSqlParsing.Feature.SelectQuery;
 using Ivtem.TSqlParsing.Feature.SqlFragment;
 using Ivtem.TSqlParsing.Feature.SqlGenerator;
@@ -107,17 +107,28 @@ Console.WriteLine($"sql: {sql}");
 
 Console.WriteLine($"Testing for errors ...");
 
-var sqlParser = new TSqlFragmentProvider();
 
-if (sqlParser.TryGetSqlFragment(sql, out var sqlFragment, out var parseErrors) == false)
+
+var sqlFragmentProvider = new TSqlFragmentProvider();
+
+var sqlParserGeneratorProvider = new SqlFragmentAndGeneratorProvider(new SqlCompatibilityLevelProvider(connectionString), sqlFragmentProvider, new SqlGeneratorFactory());
+
+TSqlFragment? sqlFragment = default;
+
+try
 {
-    foreach (var parseError in parseErrors)
-    {
-        Console.WriteLine(parseError.Message);
-    }
+    sqlFragment = await sqlParserGeneratorProvider.TryGetSqlFragment(sql);
+}
+catch (Exception e)
+{
+    Console.WriteLine(e);
+}
 
+if (sqlFragment is null)
+{
     return;
 }
+
 
 Console.WriteLine("The query is valid.\n");
 
@@ -129,10 +140,9 @@ if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement) ==
     return;
 }
 
-var generatorFactory = new SqlGeneratorFactory();
-var sqlGenerator = generatorFactory.GetGenerator(dataBaseService.CompatibilityLevel);
+var sqlScriptGenerator = await sqlParserGeneratorProvider.GetSqlGenerator();
 
-var script = sqlGenerator.Generate(selectStatement);
+var script = sqlScriptGenerator.Generate(selectStatement);
 
 Console.WriteLine(script);
 return;

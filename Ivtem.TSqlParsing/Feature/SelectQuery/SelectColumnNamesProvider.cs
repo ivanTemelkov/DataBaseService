@@ -1,5 +1,4 @@
 ﻿using System.Collections.Immutable;
-using Ivtem.TSqlParsing.Feature.ColumnNames;
 using Ivtem.TSqlParsing.Feature.SqlFragment;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 

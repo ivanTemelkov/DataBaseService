@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Concurrent;
-using Ivtem.DatabaseTools.Exceptions;
+using Ivtem.TSqlParsing.Exceptions;
 
 namespace Ivtem.TSqlParsing.Model.Properties;
 

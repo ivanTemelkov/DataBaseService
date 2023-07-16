@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 using System.Data.SqlClient;
-using Ivtem.DatabaseTools.Exceptions;
+using Ivtem.TSqlParsing.Exceptions;
 using Ivtem.TSqlParsing.Model.Properties;
 
 namespace Ivtem.DatabaseTools.Feature.DatabaseService;

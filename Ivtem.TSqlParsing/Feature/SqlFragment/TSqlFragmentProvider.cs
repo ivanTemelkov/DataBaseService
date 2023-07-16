@@ -8,7 +8,7 @@ namespace Ivtem.TSqlParsing.Feature.SqlFragment;
 public class TSqlFragmentProvider : ISqlFragmentProvider
 {
     private TSqlParserFactory ParserFactory { get; } = new(initialQuotedIdentifiers: true, SqlEngineType.Standalone);
-
+    
     public bool TryGetSqlFragment(string query, TSqlCompatibilityLevel compatibilityLevel,
         [NotNullWhen(true)] out TSqlFragment? sqlFragment, [NotNullWhen(false)] out ParseError[]? parseErrors)
     {

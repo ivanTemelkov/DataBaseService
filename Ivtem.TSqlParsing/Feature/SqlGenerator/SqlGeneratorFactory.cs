@@ -44,18 +44,18 @@ public class SqlGeneratorFactory : ISqlGeneratorFactory
         };
     }
 
-    public SqlGenerator GetGenerator(TSqlCompatibilityLevel compatibilityLevel)
+    public DefaultSqlScriptGenerator GetGenerator(TSqlCompatibilityLevel compatibilityLevel)
         => compatibilityLevel switch
         {
-            TSqlCompatibilityLevel.TSql80 => new SqlGenerator(new Sql80ScriptGenerator(GeneratorOptions)),
-            TSqlCompatibilityLevel.TSql90 => new SqlGenerator(new Sql90ScriptGenerator(GeneratorOptions)),
-            TSqlCompatibilityLevel.TSql100 => new SqlGenerator(new Sql100ScriptGenerator(GeneratorOptions)),
-            TSqlCompatibilityLevel.TSql110 => new SqlGenerator(new Sql110ScriptGenerator(GeneratorOptions)),
-            TSqlCompatibilityLevel.TSql120 => new SqlGenerator(new Sql120ScriptGenerator(GeneratorOptions)),
-            TSqlCompatibilityLevel.TSql130 => new SqlGenerator(new Sql130ScriptGenerator(GeneratorOptions)),
-            TSqlCompatibilityLevel.TSql140 => new SqlGenerator(new Sql140ScriptGenerator(GeneratorOptions)),
-            TSqlCompatibilityLevel.TSql150 => new SqlGenerator(new Sql150ScriptGenerator(GeneratorOptions)),
-            TSqlCompatibilityLevel.TSql160 => new SqlGenerator(new Sql160ScriptGenerator(GeneratorOptions)),
+            TSqlCompatibilityLevel.TSql80 => new DefaultSqlScriptGenerator(new Sql80ScriptGenerator(GeneratorOptions)),
+            TSqlCompatibilityLevel.TSql90 => new DefaultSqlScriptGenerator(new Sql90ScriptGenerator(GeneratorOptions)),
+            TSqlCompatibilityLevel.TSql100 => new DefaultSqlScriptGenerator(new Sql100ScriptGenerator(GeneratorOptions)),
+            TSqlCompatibilityLevel.TSql110 => new DefaultSqlScriptGenerator(new Sql110ScriptGenerator(GeneratorOptions)),
+            TSqlCompatibilityLevel.TSql120 => new DefaultSqlScriptGenerator(new Sql120ScriptGenerator(GeneratorOptions)),
+            TSqlCompatibilityLevel.TSql130 => new DefaultSqlScriptGenerator(new Sql130ScriptGenerator(GeneratorOptions)),
+            TSqlCompatibilityLevel.TSql140 => new DefaultSqlScriptGenerator(new Sql140ScriptGenerator(GeneratorOptions)),
+            TSqlCompatibilityLevel.TSql150 => new DefaultSqlScriptGenerator(new Sql150ScriptGenerator(GeneratorOptions)),
+            TSqlCompatibilityLevel.TSql160 => new DefaultSqlScriptGenerator(new Sql160ScriptGenerator(GeneratorOptions)),
             _ => throw new ArgumentOutOfRangeException(nameof(compatibilityLevel), compatibilityLevel, null)
         };
 }

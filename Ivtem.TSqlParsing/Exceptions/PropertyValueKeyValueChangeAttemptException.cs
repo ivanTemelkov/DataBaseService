@@ -1,4 +1,4 @@
-﻿namespace Ivtem.DatabaseTools.Exceptions;
+﻿namespace Ivtem.TSqlParsing.Exceptions;
 
 public sealed class PropertyValueKeyValueChangeAttemptException : Exception
 {

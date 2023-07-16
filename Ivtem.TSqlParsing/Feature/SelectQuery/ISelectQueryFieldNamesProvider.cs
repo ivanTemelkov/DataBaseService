@@ -1,7 +1,7 @@
 ﻿using System.Collections.Immutable;
 using Ivtem.TSqlParsing.Feature.CompatibilityLevel;
 
-namespace Ivtem.TSqlParsing.Feature.ColumnNames;
+namespace Ivtem.TSqlParsing.Feature.SelectQuery;
 
 public interface ISelectQueryFieldNamesProvider
 {

@@ -2,11 +2,11 @@
 
 namespace Ivtem.TSqlParsing.Feature.SqlGenerator;
 
-public class SqlGenerator
+public class DefaultSqlScriptGenerator
 {
     private SqlScriptGenerator ScriptGenerator { get; }
 
-    public SqlGenerator(SqlScriptGenerator scriptGenerator)
+    public DefaultSqlScriptGenerator(SqlScriptGenerator scriptGenerator)
     {
         ScriptGenerator = scriptGenerator;
     }

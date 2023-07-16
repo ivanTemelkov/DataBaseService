@@ -5,5 +5,5 @@ namespace Ivtem.TSqlParsing.Feature.SqlGenerator;
 
 public interface ISqlGeneratorFactory
 {
-    SqlGenerator GetGenerator(TSqlCompatibilityLevel compatibilityLevel);
+    DefaultSqlScriptGenerator GetGenerator(TSqlCompatibilityLevel compatibilityLevel);
 }
