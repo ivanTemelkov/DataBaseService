@@ -11,13 +11,13 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddSqlParsing(this IServiceCollection sc, string connectionString) 
         => sc
-            .AddScoped<ISqlGeneratorFactory, SqlGeneratorFactory>()
-            .AddScoped<ISqlFragmentProvider, TSqlFragmentProvider>()
-            .AddScoped<ISelectColumnNamesProvider, SelectColumnNamesProvider>()
-            .AddScoped<ISelectQueryFieldNamesProvider, SelectQueryFieldNamesProvider>()
-            .AddScoped<ISqlFragmentAndGeneratorProvider, SqlFragmentAndGeneratorProvider>()
-            .AddScoped<ISelectStatementProvider, SelectStatementProvider>()
-            .AddScoped<ISqlCompatibilityLevelProvider>(_ => new SqlCompatibilityLevelProvider(connectionString));
+            .AddTransient<ISqlGeneratorFactory, SqlGeneratorFactory>()
+            .AddTransient<ISqlFragmentProvider, TSqlFragmentProvider>()
+            .AddTransient<ISelectColumnNamesProvider, SelectColumnNamesProvider>()
+            .AddTransient<ISelectQueryFieldNamesProvider, SelectQueryFieldNamesProvider>()
+            .AddTransient<ISqlFragmentAndGeneratorProvider, SqlFragmentAndGeneratorProvider>()
+            .AddTransient<ISelectStatementProvider, SelectStatementProvider>()
+            .AddTransient<ISqlCompatibilityLevelProvider>(_ => new SqlCompatibilityLevelProvider(connectionString));
 
     public static IServiceCollection AddSqlParsing(this IServiceCollection sc, Func<string> connectionStringConfig)
     {

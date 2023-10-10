@@ -1,5 +1,4 @@
 ﻿using System.Data.SqlClient;
-using Ivtem.TSqlParsing.Extensions;
 
 namespace Ivtem.TSqlParsing.Feature.CompatibilityLevel;
 
@@ -21,13 +20,8 @@ public class SqlCompatibilityLevelProvider : ISqlCompatibilityLevelProvider
         ConnectionStringBuilder = new SqlConnectionStringBuilder(connectionString);
     }
 
-    public Task<TSqlCompatibilityLevel> GetCompatibilityLevelWithTimeout(TimeSpan? timeoutInterval = null)
-    {
-        var timeout = timeoutInterval ?? TimeSpan.FromSeconds(1);
-        return GetCompatibilityLevel().WithTimeout(timeout);
-    }
 
-    public async Task<TSqlCompatibilityLevel> GetCompatibilityLevel()
+    public TSqlCompatibilityLevel GetCompatibilityLevel()
     {
         if (CompatibilityLevel.HasValue) return CompatibilityLevel.Value;
 
@@ -35,17 +29,17 @@ public class SqlCompatibilityLevelProvider : ISqlCompatibilityLevelProvider
 SELECT TOP 1 compatibility_level AS [CompatibilityLevel]
 FROM sys.databases WHERE name = '{InitialCatalog}';
 ";
-        await using var connection = new SqlConnection(ConnectionString);
+        using var connection = new SqlConnection(ConnectionString);
 
-        await connection.OpenAsync();
+        connection.Open();
 
         var command = new SqlCommand(sql, connection);
 
-        await using var sqlReader = await command.ExecuteReaderAsync();
+        using var sqlReader = command.ExecuteReader();
 
-        if (await sqlReader.ReadAsync() && sqlReader[0] is byte value)
+        if (sqlReader.Read() && sqlReader[0] is byte value)
         {
-            await connection.CloseAsync();
+            connection.Close();
             CompatibilityLevel = FromInt(value);
             return CompatibilityLevel.Value;
         }

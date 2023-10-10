@@ -117,7 +117,7 @@ TSqlFragment? sqlFragment = default;
 
 try
 {
-    sqlFragment = await sqlParserGeneratorProvider.GetSqlFragment(sql);
+    sqlFragment = sqlParserGeneratorProvider.GetSqlFragment(sql);
 }
 catch (Exception e)
 {
@@ -140,7 +140,7 @@ if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement) ==
     return;
 }
 
-var sqlScriptGenerator = await sqlParserGeneratorProvider.GetSqlGenerator();
+var sqlScriptGenerator = sqlParserGeneratorProvider.GetSqlGenerator();
 
 var script = sqlScriptGenerator.Generate(selectStatement);
 

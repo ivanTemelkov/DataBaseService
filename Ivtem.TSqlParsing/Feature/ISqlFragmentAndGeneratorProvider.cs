@@ -6,12 +6,9 @@ namespace Ivtem.TSqlParsing.Feature;
 
 public interface ISqlFragmentAndGeneratorProvider
 {
-    Task<TSqlCompatibilityLevel> GetCompatibilityLevel();
+    TSqlCompatibilityLevel GetCompatibilityLevel();
 
-    Task<DefaultSqlScriptGenerator> GetSqlGenerator();
-
-    [Obsolete($"Use {nameof(GetSqlFragment)} instead.")]
-    Task<TSqlFragment> TryGetSqlFragment(string sql);
-
-    Task<TSqlFragment> GetSqlFragment(string sql);
+    DefaultSqlScriptGenerator GetSqlGenerator();
+    
+    TSqlFragment GetSqlFragment(string sql);
 }

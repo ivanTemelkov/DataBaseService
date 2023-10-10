@@ -25,15 +25,15 @@ public class SqlFragmentAndGeneratorProvider : ISqlFragmentAndGeneratorProvider
         SqlGeneratorFactory = sqlGeneratorFactory;
     }
 
-    public async Task<TSqlCompatibilityLevel> GetCompatibilityLevel()
+    public TSqlCompatibilityLevel GetCompatibilityLevel()
     {
-        CompatibilityLevel ??= await CompatibilityLevelProvider.GetCompatibilityLevelWithTimeout();
+        CompatibilityLevel ??= CompatibilityLevelProvider.GetCompatibilityLevel();
         return CompatibilityLevel.Value;
     }
 
-    public async Task<TSqlFragment> GetSqlFragment(string sql)
+    public TSqlFragment GetSqlFragment(string sql)
     {
-        CompatibilityLevel ??= await CompatibilityLevelProvider.GetCompatibilityLevelWithTimeout();
+        CompatibilityLevel ??= CompatibilityLevelProvider.GetCompatibilityLevel();
         if (SqlFragmentProvider.TryGetSqlFragment(sql, CompatibilityLevel.Value, out var sqlFragment, out var parseErrors) ==
             false)
         {
@@ -42,16 +42,10 @@ public class SqlFragmentAndGeneratorProvider : ISqlFragmentAndGeneratorProvider
 
         return sqlFragment;
     }
-
-    [Obsolete($"Use {nameof(GetSqlFragment)} instead.")]
-    public Task<TSqlFragment> TryGetSqlFragment(string sql)
+    
+    public DefaultSqlScriptGenerator GetSqlGenerator()
     {
-        return GetSqlFragment(sql);
-    }
-
-    public async Task<DefaultSqlScriptGenerator> GetSqlGenerator()
-    {
-        CompatibilityLevel ??= await CompatibilityLevelProvider.GetCompatibilityLevelWithTimeout();
+        CompatibilityLevel ??= CompatibilityLevelProvider.GetCompatibilityLevel();
         return SqlGeneratorFactory.GetGenerator(CompatibilityLevel.Value);
     }
 

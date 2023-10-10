@@ -7,7 +7,9 @@ namespace Ivtem.TSqlParsing.Feature.SelectQuery;
 public class SelectQueryFieldNamesProvider : ISelectQueryFieldNamesProvider
 {
     private ISqlFragmentProvider SqlFragmentProvider { get; }
+
     private ISqlCompatibilityLevelProvider CompatibilityLevelProvider { get; }
+
     private ISelectColumnNamesProvider SelectColumnNamesProvider { get; }
 
     private TSqlCompatibilityLevel? CompatibilityLevel { get; set; }
@@ -34,10 +36,17 @@ public class SelectQueryFieldNamesProvider : ISelectQueryFieldNamesProvider
         throw new InvalidOperationException($"Failed to parse sql string: {sql}! Error(s): {errors}");
     }
 
-    public async Task<ImmutableArray<string>> GetFieldNamesAsync(string sql)
+    public ImmutableArray<string> GetFieldNames(string sql)
     {
-        if (CompatibilityLevel.HasValue == false) CompatibilityLevel = await CompatibilityLevelProvider.GetCompatibilityLevelWithTimeout();
+        ArgumentException.ThrowIfNullOrEmpty(nameof(sql));
 
-        return GetFieldNames(sql, CompatibilityLevel.Value);
+        CompatibilityLevel ??= CompatibilityLevelProvider.GetCompatibilityLevel();
+        if (SqlFragmentProvider.TryGetSqlFragment(sql, CompatibilityLevel.Value,
+                out var sqlFragment,
+                out var parseErrors))
+            return SelectColumnNamesProvider.GetColumnNames(sqlFragment);
+
+        var errors = string.Join(", ", parseErrors.Select(x => x.ToString()));
+        throw new InvalidOperationException($"Failed to parse sql string: {sql}! Error(s): {errors}");
     }
 }
