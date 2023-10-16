@@ -93,13 +93,37 @@ END;
 ";
 
 sql = @"
+
+/*
+**	Initial Comment Block
+**
+**
+**
+*/
+
 INSERT INTO [Piazzamenti] (id)
 VALUES (1);
+
+
+/*
+**	Middle Comment Block
+**
+**
+**
+*/
 
 SELECT [ma_codice] AS [MachineId],
 	   [fa_id] AS [PhaseId]
 FROM [Piazzamenti] (NOLOCK)
 WHERE [ma_codice] IN (@@machineIds@@);
+
+
+/*
+**	End Comment Block
+**
+**
+**
+*/
 ";
 
 
@@ -127,6 +151,17 @@ catch (Exception e)
 if (sqlFragment is null)
 {
     return;
+}
+
+
+var blockCommentProvider = new BlockCommentProvider();
+
+if (blockCommentProvider.TryGetBlockComments(sqlFragment, out var commentBlocks))
+{
+    foreach (var commentBlock in commentBlocks)
+    {
+        Console.WriteLine(commentBlock);
+    }
 }
 
 

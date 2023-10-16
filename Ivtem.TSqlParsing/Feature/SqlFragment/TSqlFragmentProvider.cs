@@ -29,4 +29,3 @@ public class TSqlFragmentProvider : ISqlFragmentProvider
         [NotNullWhen(false)] out ParseError[]? parseErrors)
         => TryGetSqlFragment(query, TSqlCompatibilityLevel.TSql160, out sqlFragment, out parseErrors);
 }
-

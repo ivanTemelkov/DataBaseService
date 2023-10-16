@@ -23,5 +23,4 @@ public class GetSelectStatementVisitor : GetDataVisitor<SelectStatement?>
     {
         SelectStatement = node.Statements.OfType<SelectStatement>().FirstOrDefault();
     }
-
 }
