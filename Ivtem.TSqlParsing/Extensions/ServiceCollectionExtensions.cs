@@ -24,4 +24,14 @@ public static class ServiceCollectionExtensions
         var connectionString = connectionStringConfig();
         return sc.AddSqlParsing(connectionString);
     }
+
+    public static IServiceCollection AddSqlParsing(this IServiceCollection sc, Func<ISqlCompatibilityLevelProvider> getCompatibilityLevelProvider)
+        => sc
+            .AddTransient<ISqlGeneratorFactory, SqlGeneratorFactory>()
+            .AddTransient<ISqlFragmentProvider, TSqlFragmentProvider>()
+            .AddTransient<ISelectColumnNamesProvider, SelectColumnNamesProvider>()
+            .AddTransient<ISelectQueryFieldNamesProvider, SelectQueryFieldNamesProvider>()
+            .AddTransient<ISqlFragmentAndGeneratorProvider, SqlFragmentAndGeneratorProvider>()
+            .AddTransient<ISelectStatementProvider, SelectStatementProvider>()
+            .AddTransient<ISqlCompatibilityLevelProvider>(_ => getCompatibilityLevelProvider());
 }

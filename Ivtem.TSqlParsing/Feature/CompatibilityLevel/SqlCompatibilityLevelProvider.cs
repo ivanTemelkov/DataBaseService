@@ -8,11 +8,9 @@ public class SqlCompatibilityLevelProvider : ISqlCompatibilityLevelProvider
 
     private SqlConnectionStringBuilder ConnectionStringBuilder { get; }
 
-    public string DataSource => ConnectionStringBuilder.DataSource;
+    private string InitialCatalog => ConnectionStringBuilder.InitialCatalog;
 
-    public string InitialCatalog => ConnectionStringBuilder.InitialCatalog;
-
-    public string ConnectionString => ConnectionStringBuilder.ConnectionString;
+    private string ConnectionString => ConnectionStringBuilder.ConnectionString;
 
     public SqlCompatibilityLevelProvider(string connectionString)
     {

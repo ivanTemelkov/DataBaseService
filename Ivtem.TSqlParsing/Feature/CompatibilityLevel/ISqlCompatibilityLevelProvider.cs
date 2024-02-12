@@ -2,10 +2,5 @@
 
 public interface ISqlCompatibilityLevelProvider
 {
-    TSqlCompatibilityLevel? CompatibilityLevel { get; }
-    string DataSource { get; }
-    string InitialCatalog { get; }
-    string ConnectionString { get; }
-
     TSqlCompatibilityLevel GetCompatibilityLevel();
 }
