@@ -12,6 +12,11 @@ var selectStatementWithUnion = """
                                Some metadata
                                */
 
+                               DROP TABLE LNK_TableName;
+                               
+                               -- This is considered unsafe
+                               SELECT * FROM sys.databases;
+                               
                                SELECT MachineId, MachineDescription, MachineState, MachineUptime
                                FROM (
                                    VALUES
@@ -55,6 +60,13 @@ var selectQueryProvider = new SelectStatementProvider();
 
 if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement))
 {
+    var detector = new UnsafeSelectQueryDetector(selectStatement);
+    if (detector.IsSafe(out var warning) == false)
+    {
+        Console.WriteLine(warning);
+        return;
+    }
+
     var selectColumnNamesProvider = new SelectColumnNamesProvider();
 
     var columnNames = selectColumnNamesProvider.GetColumnNames(selectStatement);
