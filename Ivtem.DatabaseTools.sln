@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ivtem.DatabaseTools.UnitTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ivtem.TSqlParsing", "Ivtem.TSqlParsing\Ivtem.TSqlParsing.csproj", "{13BB2424-F375-4F0A-B9F8-5AE1385F1F04}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WrapSelectStatement", "WrapSelectStatement\WrapSelectStatement.csproj", "{5C0304DE-AEDD-4922-83A2-2F813FE4B9CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{13BB2424-F375-4F0A-B9F8-5AE1385F1F04}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{13BB2424-F375-4F0A-B9F8-5AE1385F1F04}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{13BB2424-F375-4F0A-B9F8-5AE1385F1F04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C0304DE-AEDD-4922-83A2-2F813FE4B9CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C0304DE-AEDD-4922-83A2-2F813FE4B9CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C0304DE-AEDD-4922-83A2-2F813FE4B9CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C0304DE-AEDD-4922-83A2-2F813FE4B9CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

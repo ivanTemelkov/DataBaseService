@@ -7,7 +7,7 @@ public class GetColumnNamesVisitor : GetDataVisitor<ImmutableArray<string>>
 {
     public string? ColumnName { get; private set; }
 
-    private ImmutableArray<string>? ColumnNames { get; set; }
+    private ImmutableArray<string> ColumnNames { get; set; } = ImmutableArray<string>.Empty;
     
     public override void Visit(SelectStatement node)
     {
@@ -15,9 +15,22 @@ public class GetColumnNamesVisitor : GetDataVisitor<ImmutableArray<string>>
 
         var queryExpression = node.QueryExpression;
 
-        var selectElements = (queryExpression as QuerySpecification)?.SelectElements.OfType<SelectScalarExpression>();
+        IEnumerable<SelectScalarExpression>? selectElements;
+        if (queryExpression is BinaryQueryExpression binaryQueryExpression)
+        {
+            selectElements = (binaryQueryExpression.FirstQueryExpression as QuerySpecification)?
+                .SelectElements
+                .OfType<SelectScalarExpression>();
+        }
+        else
+        {
+            selectElements = (queryExpression as QuerySpecification)?
+                .SelectElements
+                .OfType<SelectScalarExpression>();
+        }
 
-        if (selectElements is null) return;
+        if (selectElements is null)
+            return;
 
         var columnNames = new List<string>();
 
@@ -25,7 +38,8 @@ public class GetColumnNamesVisitor : GetDataVisitor<ImmutableArray<string>>
         {
             selectElement.Accept(this);
 
-            if (string.IsNullOrWhiteSpace(ColumnName)) continue;
+            if (string.IsNullOrWhiteSpace(ColumnName))
+                continue;
 
             columnNames.Add(ColumnName);
         }
@@ -35,7 +49,7 @@ public class GetColumnNamesVisitor : GetDataVisitor<ImmutableArray<string>>
     
     protected override ImmutableArray<string> GetVisitorData()
     {
-        return ColumnNames ?? throw new InvalidOperationException($"{nameof(ColumnNames)} is null!");
+        return ColumnNames;
     }
 
     public override void Visit(SelectScalarExpression node)
