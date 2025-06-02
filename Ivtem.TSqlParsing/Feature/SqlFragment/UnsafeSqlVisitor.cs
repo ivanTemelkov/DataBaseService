@@ -1,37 +1,124 @@
-﻿using System.Collections.Immutable;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
+﻿using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace Ivtem.TSqlParsing.Feature.SqlFragment;
 
 public sealed class UnsafeSqlVisitor : TSqlFragmentVisitor
 {
+    public static readonly HashSet<string> DangerousBuiltInFunctions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        // 🛡 Security & Role context
+        "suser_name",
+        "suser_sname",
+        "user_name",
+        "original_login",
+        "session_user",
+        "system_user",
+        "current_user",
+        "is_srvrolemember",
+        "is_member",
+        "has_perms_by_name",
+        "loginproperty",
+
+        // 🧠 Metadata & Discovery
+        "object_id",
+        "object_name",
+        "col_name",
+        "type_name",
+        "schema_name",
+        "db_name",
+        "database_principal_id",
+
+        // 🧩 Dynamic SQL helpers
+        "formatmessage",
+        "quotename",
+        "replace",       // context-specific
+        "concat",        // context-specific
+        "cast",
+        "convert",
+
+        // 🛠 Server/environment context
+        "host_name",
+        "app_name",
+        "@@version",     // technically a global variable, but often string-matched
+        "@@servername",
+
+        // 🧪 Execution trace
+        "fn_trace_gettable",  // exposes trace files
+
+        // 🧨 Extended stored procedures via UDF-style syntax (precaution)
+        "xp_cmdshell",
+        "xp_dirtree",
+        "xp_fileexist",
+        "xp_regread",
+        "xp_regwrite",
+        "sp_executesql"
+    };
+
+    private static readonly HashSet<string> ProtectedSystemSchema = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "sys", "information_schema"
+    };
+    
+    private static readonly HashSet<string> LegacySystemViews = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "sysobjects",
+        "syscolumns",
+        "sysindexes",
+        "sysreferences",
+        "sysfiles",
+        "sysusers",
+        "sysforeignkeys"
+    };
+    
     public string? Warning { get; private set; }
 
     public bool IsUnsafe => Warning is not null;
+    
+    public override void Visit(OpenRowsetTableReference node)
+    {
+        Warning = $"OpenRowset is considered unsafe! Detected at line {node.StartLine}";
+    }
+    
+    public override void Visit(OpenQueryTableReference node)
+    {
+        Warning = $"OpenQuery is considered unsafe! Detected at line {node.StartLine}";
+    }
+    
+    public override void Visit(AdHocTableReference node)
+    {
+        Warning = $"OpenDataSource (ad hoc) is considered unsafe! Detected at line {node.StartLine}";
+    }
+    
+    public override void Visit(SchemaObjectFunctionTableReference node)
+    {
+        if (IsUnsafe)
+            return;
+        
+        var functionName = node.SchemaObject.BaseIdentifier?.Value;
+        
+        if (functionName is null)
+            return;
+        
+        if (DangerousBuiltInFunctions.Contains(functionName) == false)
+            return;
+        
+        Warning = $"Table-valued function call {functionName} is considered unsafe! Detected at line {node.StartLine}";
+    }
     
     public override void Visit(FunctionCall node)
     {
         if (IsUnsafe)
             return;
         
-        var functionName = node.FunctionName?.Value?.ToLowerInvariant();
+        var functionName = node.FunctionName?.Value;
         
         if (functionName is null)
             return;
         
-        if (functionName is not ("xp_cmdshell" or "sp_executesql" or "openrowset" or "openquery"
-            or "opendatasource"))
+        if (DangerousBuiltInFunctions.Contains(functionName) == false)
             return;
         
-        Warning = $"Dangerous function detected: {functionName}";
-    }
-
-    public override void Visit(ExecuteStatement node)
-    {
-        if (IsUnsafe)
-            return;
-        
-        Warning = "EXEC/EXECUTE statement detected.";
+        Warning = $"Function call {functionName} is considered unsafe! Detected at line {node.StartLine}";
     }
 
     public override void Visit(SchemaObjectName node)
@@ -42,12 +129,12 @@ public sealed class UnsafeSqlVisitor : TSqlFragmentVisitor
         foreach (var id in node.Identifiers)
         {
             var val = id.Value;
-            if (val.Equals("sys", StringComparison.OrdinalIgnoreCase) ||
-                val.Equals("information_schema", StringComparison.OrdinalIgnoreCase))
-            {
-                Warning = $"Reference to system schema: {val} at line {node.StartLine}";
-                return;
-            }
+            
+            if (ProtectedSystemSchema.Contains(val) == false)
+                continue;
+            
+            Warning = $"Reference to system schema {val} is considered unsafe! Detected at line {node.StartLine}";
+            return;
         }
     }
 
@@ -56,27 +143,25 @@ public sealed class UnsafeSqlVisitor : TSqlFragmentVisitor
         if (IsUnsafe)
             return;
         
+        var objectName = node.SchemaObject.BaseIdentifier?.Value;
+        if (string.IsNullOrWhiteSpace(objectName) == false && LegacySystemViews.Contains(objectName))
+        {
+            Warning = $"Use of deprecated system view {objectName} is considered unsafe! Detected at line {node.StartLine}";
+            return;
+        }
+        
         var identifiers = node.SchemaObject?.Identifiers;
         if (identifiers == null || identifiers.Count == 0)
             return;
 
         // Detect sys.* or INFORMATION_SCHEMA.*
-        var schema = identifiers.Count > 1 ? identifiers[^2].Value.ToLowerInvariant() : "";
+        var schema = identifiers.Count > 1
+            ? identifiers[^2].Value
+            : string.Empty;
 
-        if (schema is "sys" or "information_schema")
-        {
-            Warning = $"System object access: {schema} at line {node.StartLine}";
-        }
-    }
-
-    public override void Visit(ProcedureReferenceName node)
-    {
-        if (IsUnsafe)
+        if (ProtectedSystemSchema.Contains(schema) == false)
             return;
         
-        if (node.ProcedureReference.Name.BaseIdentifier?.Value.ToLowerInvariant().StartsWith("xp_") == true)
-        {
-            Warning = $"Extended stored procedure: {node.ProcedureReference.Name}";
-        }
+        Warning = $"Access to system object {schema} is considered unsafe! Deteced at line {node.StartLine}";
     }
 }
