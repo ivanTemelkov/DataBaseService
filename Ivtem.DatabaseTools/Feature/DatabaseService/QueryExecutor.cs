@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using Ivtem.TSqlParsing.Exceptions;
 using Ivtem.TSqlParsing.Model.Properties;
+using Microsoft.Data.SqlClient;
 
 namespace Ivtem.DatabaseTools.Feature.DatabaseService;
 

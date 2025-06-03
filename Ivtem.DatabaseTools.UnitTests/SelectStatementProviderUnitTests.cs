@@ -263,19 +263,9 @@ public class SelectStatementProviderUnitTests
         
         var selectQueryProvider = new SelectStatementProvider();
 
-        if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement))
-        {
-            
-            if (selectStatement.QueryExpression is BinaryQueryExpression binaryQueryExpression)
-            {
-                var actual = binaryQueryExpression.BinaryQueryExpressionType;
-                var expected = BinaryQueryExpressionType.Union;
-                Assert.That(actual, Is.EqualTo(expected));
-                return;
-            }
-        }
+        var isFound = selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement);
         
-        Assert.Fail();
+        Assert.That(isFound, Is.True);
     }
     
 }

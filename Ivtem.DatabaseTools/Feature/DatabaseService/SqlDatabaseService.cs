@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Ivtem.TSqlParsing.Feature.CompatibilityLevel;
 
 namespace Ivtem.DatabaseTools.Feature.DatabaseService;
