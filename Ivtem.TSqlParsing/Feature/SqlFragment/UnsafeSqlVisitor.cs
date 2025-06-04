@@ -6,7 +6,7 @@ public sealed class UnsafeSqlVisitor : TSqlFragmentVisitor
 {
     public static readonly HashSet<string> DangerousBuiltInFunctions = new(StringComparer.OrdinalIgnoreCase)
     {
-        // 🛡 Security & Role context
+        // Security & Role context
         "suser_name",
         "suser_sname",
         "user_name",
@@ -19,7 +19,7 @@ public sealed class UnsafeSqlVisitor : TSqlFragmentVisitor
         "has_perms_by_name",
         "loginproperty",
 
-        // 🧠 Metadata & Discovery
+        // Metadata & Discovery
         "object_id",
         "object_name",
         "col_name",
@@ -28,24 +28,16 @@ public sealed class UnsafeSqlVisitor : TSqlFragmentVisitor
         "db_name",
         "database_principal_id",
 
-        // 🧩 Dynamic SQL helpers
-        "formatmessage",
-        "quotename",
-        "replace",       // context-specific
-        "concat",        // context-specific
-        "cast",
-        "convert",
-
-        // 🛠 Server/environment context
+        // Server/environment context
         "host_name",
         "app_name",
         "@@version",     // technically a global variable, but often string-matched
         "@@servername",
 
-        // 🧪 Execution trace
+        // Execution trace
         "fn_trace_gettable",  // exposes trace files
 
-        // 🧨 Extended stored procedures via UDF-style syntax (precaution)
+        // Extended stored procedures via UDF-style syntax (precaution)
         "xp_cmdshell",
         "xp_dirtree",
         "xp_fileexist",
