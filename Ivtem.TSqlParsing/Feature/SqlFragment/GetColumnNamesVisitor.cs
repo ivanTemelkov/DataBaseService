@@ -58,5 +58,5 @@ public class GetColumnNamesVisitor : GetDataVisitor<ImmutableArray<string>>
     }
 
     private static string EvaluateColumnName(SelectScalarExpression node) =>
-        (node.Expression as ColumnReferenceExpression)?.MultiPartIdentifier.Identifiers.Last().Value ?? throw new NotImplementedException($"node.Expression of type: {node.Expression.GetType().Name} NOT supported!");
+        (node.Expression as ColumnReferenceExpression)?.MultiPartIdentifier.Identifiers.Last().Value ?? string.Empty;
 }
