@@ -9,10 +9,11 @@ public class GetColumnNamesVisitor : GetDataVisitor<ImmutableArray<string>>
 
     private ImmutableArray<string> ColumnNames { get; set; } = ImmutableArray<string>.Empty;
     
-    public override void Visit(SelectStatement node)
+    public override void ExplicitVisit(SelectStatement node)
     {
         IsVisitCalled = true;
 
+        
         var queryExpression = node.QueryExpression;
 
         IEnumerable<SelectScalarExpression>? selectElements;
@@ -44,17 +45,18 @@ public class GetColumnNamesVisitor : GetDataVisitor<ImmutableArray<string>>
             columnNames.Add(ColumnName);
         }
 
-        ColumnNames = columnNames.ToImmutableArray();
+        ColumnNames = [..columnNames];
+    }
+    
+
+    public override void ExplicitVisit(SelectScalarExpression node)
+    {
+        ColumnName = node.ColumnName?.Value ?? EvaluateColumnName(node);
     }
     
     protected override ImmutableArray<string> GetVisitorData()
     {
         return ColumnNames;
-    }
-
-    public override void Visit(SelectScalarExpression node)
-    {
-        ColumnName = node.ColumnName?.Value ?? EvaluateColumnName(node);
     }
 
     private static string EvaluateColumnName(SelectScalarExpression node) =>

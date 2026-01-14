@@ -9,7 +9,7 @@ public class GetSelectStatementVisitor : GetDataVisitor<SelectStatement?>
     protected override SelectStatement? GetVisitorData()
         => SelectStatement;
     
-    public override void Visit(TSqlScript node)
+    public override void ExplicitVisit(TSqlScript node)
     {
         IsVisitCalled = true;
 
@@ -21,7 +21,7 @@ public class GetSelectStatementVisitor : GetDataVisitor<SelectStatement?>
         }
     }
 
-    public override void Visit(TSqlBatch node)
+    public override void ExplicitVisit(TSqlBatch node)
     {
         var selectStatements = node.Statements
             .OfType<SelectStatement>();

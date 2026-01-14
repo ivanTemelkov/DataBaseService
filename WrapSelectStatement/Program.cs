@@ -15,7 +15,7 @@ var selectStatementWithUnion = """
                                DROP TABLE LNK_TableName;
                                
                                -- This is considered unsafe
-                               SELECT * FROM sys.databases;
+                               -- SELECT * FROM sys.databases;
                                
                                SELECT MachineId, MachineDescription, MachineState, MachineUptime
                                FROM (

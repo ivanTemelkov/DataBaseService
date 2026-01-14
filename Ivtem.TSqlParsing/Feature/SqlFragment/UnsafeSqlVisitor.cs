@@ -66,22 +66,22 @@ public sealed class UnsafeSqlVisitor : TSqlFragmentVisitor
 
     public bool IsUnsafe => Warning is not null;
     
-    public override void Visit(OpenRowsetTableReference node)
+    public override void ExplicitVisit(OpenRowsetTableReference node)
     {
         Warning = $"OpenRowset is considered unsafe! Detected at line {node.StartLine}";
     }
     
-    public override void Visit(OpenQueryTableReference node)
+    public override void ExplicitVisit(OpenQueryTableReference node)
     {
         Warning = $"OpenQuery is considered unsafe! Detected at line {node.StartLine}";
     }
     
-    public override void Visit(AdHocTableReference node)
+    public override void ExplicitVisit(AdHocTableReference node)
     {
         Warning = $"OpenDataSource (ad hoc) is considered unsafe! Detected at line {node.StartLine}";
     }
     
-    public override void Visit(SchemaObjectFunctionTableReference node)
+    public override void ExplicitVisit(SchemaObjectFunctionTableReference node)
     {
         if (IsUnsafe)
             return;
@@ -97,7 +97,7 @@ public sealed class UnsafeSqlVisitor : TSqlFragmentVisitor
         Warning = $"Table-valued function call {functionName} is considered unsafe! Detected at line {node.StartLine}";
     }
     
-    public override void Visit(FunctionCall node)
+    public override void ExplicitVisit(FunctionCall node)
     {
         if (IsUnsafe)
             return;
@@ -113,7 +113,7 @@ public sealed class UnsafeSqlVisitor : TSqlFragmentVisitor
         Warning = $"Function call {functionName} is considered unsafe! Detected at line {node.StartLine}";
     }
 
-    public override void Visit(SchemaObjectName node)
+    public override void ExplicitVisit(SchemaObjectName node)
     {
         if (IsUnsafe)
             return;
@@ -130,7 +130,7 @@ public sealed class UnsafeSqlVisitor : TSqlFragmentVisitor
         }
     }
 
-    public override void Visit(NamedTableReference node)
+    public override void ExplicitVisit(NamedTableReference node)
     {
         if (IsUnsafe)
             return;

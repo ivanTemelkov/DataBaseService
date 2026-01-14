@@ -8,7 +8,7 @@ using Ivtem.TSqlParsing.Model.Properties;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 var connectionString =
-    @"Initial Catalog=operaSacet;Data Source=LM-NBK-44\DEV19;User ID=operasa;Password=*****;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+    @"Data Source=localhost;Initial Catalog=LinkFactoryControl_WF;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False";
 
 
 Console.WriteLine("Initializing the SqlDatabaseService ...");
@@ -126,6 +126,29 @@ WHERE [ma_codice] IN (@@machineIds@@);
 */
 ";
 
+sql = """
+      /*  @Context@
+      **	Name: Data
+      **  ProfileId: *
+      **	QueryType: SingleRowQuery
+      **  Priority: 1
+      */
+
+      WITH NamesCTE AS (
+          SELECT 'Alice' AS Name
+          UNION ALL
+          SELECT 'Bob' AS Name
+          UNION ALL
+          SELECT 'Charlie' AS Name
+      )
+      SELECT 
+          STUFF((
+              SELECT ',' + Name
+              FROM NamesCTE
+              FOR XML PATH('')
+          ), 1, 1, '') AS ConcatenatedNames,
+          1 AS RowNumber
+      """;
 
 Console.WriteLine($"sql: {sql}");
 
@@ -175,6 +198,16 @@ if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement) ==
     return;
 }
 
+var columnNamesProvider = new SelectColumnNamesProvider();
+
+var columnNames = columnNamesProvider.GetColumnNames(sqlFragment);
+
+Console.WriteLine("Column Names:");
+foreach (var columnName in columnNames)
+{
+	Console.WriteLine(columnName);
+}
+
 var sqlScriptGenerator = sqlParserGeneratorProvider.GetSqlGenerator();
 
 var script = sqlScriptGenerator.Generate(selectStatement);
@@ -194,9 +227,9 @@ foreach (var tableName in tableNames)
 return;
 
 
-var columnNamesProvider = new SelectColumnNamesProvider();
-
-var columnNames = columnNamesProvider.GetColumnNames(sqlFragment);
+// var columnNamesProvider = new SelectColumnNamesProvider();
+//
+// var columnNames = columnNamesProvider.GetColumnNames(sqlFragment);
 
 Console.WriteLine("Column Names:");
 foreach (var columnName in columnNames)
