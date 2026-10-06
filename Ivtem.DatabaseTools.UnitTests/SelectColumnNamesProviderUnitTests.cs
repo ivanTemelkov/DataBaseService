@@ -1,6 +1,7 @@
 using Ivtem.TSqlParsing.Feature.CompatibilityLevel;
 using Ivtem.TSqlParsing.Feature.SelectQuery;
 using Ivtem.TSqlParsing.Feature.SqlFragment;
+using Ivtem.TSqlParsing.Feature.SqlGenerator;
 
 namespace Ivtem.DatabaseTools.UnitTests;
 
@@ -243,7 +244,11 @@ public class SelectColumnNamesProviderUnitTests
 
         Assert.That(isParsed, Is.True);
 
-        isParsed = new SelectStatementProvider().TryGetStatement(sqlFragment!, out var selectStatement);
+        var sqlGeneratorFactory = new SqlGeneratorFactory();
+        var compatibilityLevelProvider = PredefinedSqlCompatibilityLevelProvider.TSql160Provider;
+        var selectQueryProvider = new SelectStatementProvider(sqlGeneratorFactory, compatibilityLevelProvider);
+
+        isParsed = selectQueryProvider.TryGetStatement(sqlFragment!, out var selectStatement);
         
         Assert.That(isParsed, Is.True);
         

@@ -6,4 +6,6 @@ namespace Ivtem.TSqlParsing.Feature.SelectQuery;
 public interface ISelectStatementProvider
 {
     bool TryGetStatement(TSqlFragment sqlFragment, [NotNullWhen(true)] out SelectStatement? selectStatement);
+
+    bool TryGetStatement(TSqlFragment sqlFragment, [NotNullWhen(true)] out SelectStatement? selectStatement, [NotNullWhen(true)] out string? sql);
 }

@@ -142,6 +142,8 @@ public class SelectStatementProviderUnitTests
                                                                                ('M005', 2400)
                                                                        ) AS u(MachineId, MachineUptime)
                                                                    )
+                                                                   
+                                                                   -- Test with comments
                                                                    SELECT 
                                                                        m.MachineId,
                                                                        m.MachineDescription,
@@ -167,15 +169,17 @@ public class SelectStatementProviderUnitTests
     {
         var sqlFragmentProvider = new TSqlFragmentProvider();
 
+        var sqlGeneratorFactory = new SqlGeneratorFactory();
+        var compatibilityLevelProvider = PredefinedSqlCompatibilityLevelProvider.TSql160Provider;
+
         var sqlParserGeneratorProvider = new SqlFragmentAndGeneratorProvider(
-            PredefinedSqlCompatibilityLevelProvider.TSql160Provider,
+            compatibilityLevelProvider,
             sqlFragmentProvider,
-            new SqlGeneratorFactory());
+            sqlGeneratorFactory);
 
         var sqlFragment = sqlParserGeneratorProvider.GetSqlFragment(SelectStatementWithUnion);
         
-        var selectQueryProvider = new SelectStatementProvider();
-
+        var selectQueryProvider = new SelectStatementProvider(sqlGeneratorFactory, compatibilityLevelProvider);
         if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement))
         {
             if (selectStatement.QueryExpression is BinaryQueryExpression binaryQueryExpression)
@@ -195,14 +199,17 @@ public class SelectStatementProviderUnitTests
     {
         var sqlFragmentProvider = new TSqlFragmentProvider();
 
+        var sqlGeneratorFactory = new SqlGeneratorFactory();
+        var compatibilityLevelProvider = PredefinedSqlCompatibilityLevelProvider.TSql160Provider;
+
         var sqlParserGeneratorProvider = new SqlFragmentAndGeneratorProvider(
-            PredefinedSqlCompatibilityLevelProvider.TSql160Provider,
+            compatibilityLevelProvider,
             sqlFragmentProvider,
-            new SqlGeneratorFactory());
+            sqlGeneratorFactory);
 
         var sqlFragment = sqlParserGeneratorProvider.GetSqlFragment(SelectStatementWithUnionAll);
         
-        var selectQueryProvider = new SelectStatementProvider();
+        var selectQueryProvider = new SelectStatementProvider(sqlGeneratorFactory, compatibilityLevelProvider);
 
         if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement))
         {
@@ -223,14 +230,17 @@ public class SelectStatementProviderUnitTests
     {
         var sqlFragmentProvider = new TSqlFragmentProvider();
 
+        var sqlGeneratorFactory = new SqlGeneratorFactory();
+        var compatibilityLevelProvider = PredefinedSqlCompatibilityLevelProvider.TSql160Provider;
+
         var sqlParserGeneratorProvider = new SqlFragmentAndGeneratorProvider(
             PredefinedSqlCompatibilityLevelProvider.TSql160Provider,
             sqlFragmentProvider,
-            new SqlGeneratorFactory());
+            sqlGeneratorFactory);
 
         var sqlFragment = sqlParserGeneratorProvider.GetSqlFragment(SelectStatementWithUnionAllAndCte);
         
-        var selectQueryProvider = new SelectStatementProvider();
+        var selectQueryProvider = new SelectStatementProvider(sqlGeneratorFactory, compatibilityLevelProvider);
 
         if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement))
         {
@@ -250,22 +260,27 @@ public class SelectStatementProviderUnitTests
     public void ItFindsSelectStatementWithOuterApply()
     {
         var sqlFragmentProvider = new TSqlFragmentProvider();
+        
+        var sqlGeneratorFactory = new SqlGeneratorFactory();
+        var compatibilityLevelProvider = PredefinedSqlCompatibilityLevelProvider.TSql160Provider;
 
         var sqlParserGeneratorProvider = new SqlFragmentAndGeneratorProvider(
-            PredefinedSqlCompatibilityLevelProvider.TSql160Provider,
+            compatibilityLevelProvider,
             sqlFragmentProvider,
-            new SqlGeneratorFactory());
+            sqlGeneratorFactory);
 
         var scriptGenerator = sqlParserGeneratorProvider.GetSqlGenerator();
         var sqlFragment = sqlParserGeneratorProvider.GetSqlFragment(SelectStatementWithOuterApply);
         
         var script = scriptGenerator.Generate(sqlFragment);
         
-        var selectQueryProvider = new SelectStatementProvider();
+        var selectQueryProvider = new SelectStatementProvider(sqlGeneratorFactory, compatibilityLevelProvider);
 
-        var isFound = selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement);
+        var isFound = selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement, out var sql);
         
         Assert.That(isFound, Is.True);
+        Assert.That(selectStatement, Is.Not.Null);
+        Assert.That(sql, Is.Not.Null);
     }
     
 }

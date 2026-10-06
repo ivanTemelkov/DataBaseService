@@ -48,15 +48,18 @@ var selectStatementWithUnion = """
     
 var sqlFragmentProvider = new TSqlFragmentProvider();
 
+var sqlGeneratorFactory = new SqlGeneratorFactory();
+var compatibilityLevelProvider = PredefinedSqlCompatibilityLevelProvider.TSql160Provider;
+
 var sqlParserGeneratorProvider = new SqlFragmentAndGeneratorProvider(
-    PredefinedSqlCompatibilityLevelProvider.TSql160Provider,
+    compatibilityLevelProvider,
     sqlFragmentProvider,
-    new SqlGeneratorFactory());
+    sqlGeneratorFactory);
 
 var scriptGenerator = sqlParserGeneratorProvider.GetSqlGenerator();
 var sqlFragment = sqlParserGeneratorProvider.GetSqlFragment(selectStatementWithUnion);
 
-var selectQueryProvider = new SelectStatementProvider();
+var selectQueryProvider = new SelectStatementProvider(sqlGeneratorFactory, compatibilityLevelProvider);
 
 if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement))
 {

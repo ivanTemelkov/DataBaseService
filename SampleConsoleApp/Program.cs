@@ -158,7 +158,10 @@ Console.WriteLine($"Testing for errors ...");
 
 var sqlFragmentProvider = new TSqlFragmentProvider();
 
-var sqlParserGeneratorProvider = new SqlFragmentAndGeneratorProvider(new SqlCompatibilityLevelProvider(connectionString), sqlFragmentProvider, new SqlGeneratorFactory());
+var sqlGeneratorFactory = new SqlGeneratorFactory();
+
+var compatibilityLevelProvider = new SqlCompatibilityLevelProvider(connectionString);
+var sqlParserGeneratorProvider = new SqlFragmentAndGeneratorProvider(compatibilityLevelProvider, sqlFragmentProvider, sqlGeneratorFactory);
 
 TSqlFragment? sqlFragment = default;
 
@@ -190,7 +193,7 @@ if (blockCommentProvider.TryGetBlockComments(sqlFragment, out var commentBlocks)
 
 Console.WriteLine("The query is valid.\n");
 
-var selectQueryProvider = new SelectStatementProvider();
+var selectQueryProvider = new SelectStatementProvider(sqlGeneratorFactory, compatibilityLevelProvider);
 
 if (selectQueryProvider.TryGetStatement(sqlFragment, out var selectStatement) == false)
 {
