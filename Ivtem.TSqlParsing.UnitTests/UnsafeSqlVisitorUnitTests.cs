@@ -3,7 +3,7 @@ using Ivtem.TSqlParsing.Feature.CompatibilityLevel;
 using Ivtem.TSqlParsing.Feature.SqlFragment;
 using Ivtem.TSqlParsing.Feature.SqlGenerator;
 
-namespace Ivtem.DatabaseTools.UnitTests;
+namespace Ivtem.TSqlParsing.UnitTests;
 
 [TestFixture]
 public class UnsafeSqlVisitorUnitTests

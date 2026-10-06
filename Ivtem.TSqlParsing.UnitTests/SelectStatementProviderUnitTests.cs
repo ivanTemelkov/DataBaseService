@@ -5,7 +5,7 @@ using Ivtem.TSqlParsing.Feature.SqlFragment;
 using Ivtem.TSqlParsing.Feature.SqlGenerator;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
-namespace Ivtem.DatabaseTools.UnitTests;
+namespace Ivtem.TSqlParsing.UnitTests;
 
 [TestFixture]
 public class SelectStatementProviderUnitTests

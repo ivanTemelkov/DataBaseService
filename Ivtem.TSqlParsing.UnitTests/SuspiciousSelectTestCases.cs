@@ -1,4 +1,4 @@
-﻿namespace Ivtem.DatabaseTools.UnitTests;
+﻿namespace Ivtem.TSqlParsing.UnitTests;
 
 public static class SuspiciousSelectTestCases
 {

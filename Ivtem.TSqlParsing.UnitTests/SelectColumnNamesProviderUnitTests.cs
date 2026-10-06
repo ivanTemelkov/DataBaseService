@@ -3,7 +3,7 @@ using Ivtem.TSqlParsing.Feature.SelectQuery;
 using Ivtem.TSqlParsing.Feature.SqlFragment;
 using Ivtem.TSqlParsing.Feature.SqlGenerator;
 
-namespace Ivtem.DatabaseTools.UnitTests;
+namespace Ivtem.TSqlParsing.UnitTests;
 
 public class SelectColumnNamesProviderUnitTests
 {
